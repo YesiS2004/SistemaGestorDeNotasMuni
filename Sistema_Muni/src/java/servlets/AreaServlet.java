@@ -29,11 +29,21 @@ public class AreaServlet extends HttpServlet {
         if (action == null) action = "listar";
 
         switch (action) {
+            case "nuevo":
+                request.getRequestDispatcher("agregarArea.jsp").forward(request, response);
+                break;
+
             case "editar":
                 int idEditar = Integer.parseInt(request.getParameter("id"));
-                Area areaEditar = areaDAO.obtenerPorId(idEditar);
+                Area areaEditar = areaDAO.buscarPorId(idEditar);
                 request.setAttribute("area", areaEditar);
                 request.getRequestDispatcher("editarArea.jsp").forward(request, response);
+                break;
+
+            case "eliminar":
+                int idEliminar = Integer.parseInt(request.getParameter("id"));
+                areaDAO.eliminar(idEliminar);
+                response.sendRedirect("areas");
                 break;
 
             case "listar":
@@ -51,11 +61,26 @@ public class AreaServlet extends HttpServlet {
 
         String action = request.getParameter("action");
 
-        if ("actualizar".equals(action)) {
-            int id = Integer.parseInt(request.getParameter("id"));
-            String nombre = request.getParameter("nombre");
-            Area area = new Area(id, nombre);
-            areaDAO.actualizar(area);
+        switch (action) {
+            case "agregar":
+                String nombre = request.getParameter("nombre");
+                int usuarioArea = Integer.parseInt(request.getParameter("usuarioArea"));
+
+                Area nuevaArea = new Area();
+                nuevaArea.setNombre(nombre);
+                nuevaArea.setUsuario_Area(usuarioArea);
+
+                areaDAO.agregar(nuevaArea);
+                break;
+
+            case "actualizar":
+                int id = Integer.parseInt(request.getParameter("id"));
+                String nombreEditado = request.getParameter("nombre");
+                int usuarioEditado = Integer.parseInt(request.getParameter("usuarioArea"));
+
+                Area areaActualizada = new Area(id, nombreEditado, usuarioEditado);
+                areaDAO.actualizar(areaActualizada);
+                break;
         }
 
         response.sendRedirect("areas");

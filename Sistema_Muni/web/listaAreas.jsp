@@ -1,119 +1,56 @@
-<%@ page contentType="text/html; charset=UTF-8" language="java" %>
-<%@ page import="java.util.List" %>
-<%@ page import="modelo.Area" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <title>Lista de Áreas</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #f5f8ff;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            width: 80%;
-            margin: 40px auto;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0px 2px 10px rgba(0,0,0,0.1);
-            padding: 20px;
-        }
-        h2 {
-            text-align: center;
-            color: #4b7bec;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 25px;
-        }
-        th, td {
-            text-align: center;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #4b7bec;
-            color: white;
-        }
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-        a.btn {
-            text-decoration: none;
-            padding: 6px 12px;
-            border-radius: 5px;
-            color: white;
-            font-size: 14px;
-        }
-        .btn-editar {
-            background-color: #4cd137;
-        }
-        .btn-eliminar {
-            background-color: #e84118;
-        }
-        .btn-agregar {
-            display: inline-block;
-            background-color: #0097e6;
-            margin-bottom: 15px;
-        }
-        .top-menu {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .top-menu a {
-            background-color: #6c63ff;
-            color: white;
-            text-decoration: none;
-            padding: 8px 15px;
-            border-radius: 6px;
-        }
-    </style>
-</head>
-<body>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Listado de Áreas</title>
+        <link rel="stylesheet" href="estilos.css">
+    </head>
+    <body>
 
-<div class="container">
-    <div class="top-menu">
-        <a href="menu.jsp">Menú Principal</a>
-        <h2>Lista de Áreas</h2>
-        <a href="registrarArea.jsp" class="btn-agregar">+ Nueva Área</a>
-    </div>
+        <div class="nav-btn-container">
+            <a href="MenuPrincipal.jsp" class="btn btn-logout">⬅ Volver al Menú</a>
+        </div>
 
-    <table>
-        <tr>
-            <th>Número</th>
-            <th>Nombre del Área</th>
-            <th>Acciones</th>
-        </tr>
-        <%
-            List<Area> lista = (List<Area>) request.getAttribute("areas");
-            if (lista != null && !lista.isEmpty()) {
-                for (Area area : lista) {
-        %>
-        <tr>
-            <td><%= area.getId() %></td>
-            <td><%= area.getNombre() %></td>
-            <td>
-                <a href="areas?action=editar&id=<%= area.getId() %>" class="btn btn-editar">Editar</a>
-                <a href="areas?action=eliminar&id=<%= area.getId() %>" 
-                   class="btn btn-eliminar"
-                   onclick="return confirm('¿Seguro que deseas eliminar esta área?');">Eliminar</a>
-            </td>
-        </tr>
-        <% 
-                }
-            } else { 
-        %>
-        <tr>
-            <td colspan="3">No hay áreas registradas.</td>
-        </tr>
-        <% } %>
-    </table>
-</div>
+        <div class="container">
+            <h1>Gestión de Áreas</h1>
+            <h2>Listado completo de todas las Áreas registradas</h2>
+            
+            <a href="crearArea.jsp" class="btn btn-gradiente">Crear Nueva Área</a>
 
-</body>
+            <c:choose>
+                <c:when test="${not empty listaAreas}">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre del Área</th>
+                                <th>Usuario Responsable (ID)</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:forEach var="area" items="${listaAreas}">
+                                <tr>
+                                    <td>${area.ID_Area}</td> 
+                                    <td>${area.Nombre}</td>
+                                    <td>${area.Usuario_Area}</td>
+                                    <td>
+                                        <a href="SvArea?accion=editar&id=${area.ID_Area}" class="btn btn-gradiente" style="padding: 5px 10px; margin: 0;">Editar</a>
+                                        
+                                        <a href="SvArea?accion=eliminar&id=${area.ID_Area}" class="btn btn-logout" style="padding: 5px 10px; margin: 0;" onclick="return confirm('¿Seguro que desea eliminar esta Área?')">Eliminar</a>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                </c:when>
+                <c:otherwise>
+                    <p style="margin-top: 50px;">No hay áreas registradas en el sistema.</p>
+                </c:otherwise>
+            </c:choose>
+
+        </div>
+    </body>
 </html>

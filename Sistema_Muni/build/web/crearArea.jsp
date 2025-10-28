@@ -1,34 +1,29 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Crear Nueva Área</title>
-        <link rel="stylesheet" href="css/estilos.css">
-    </head>
-    <body>
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Área</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
 
-        <div class="nav-btn-container">
-            <a href="menuPrincipal.jsp" class="btn btn-menu-principal">MENÚ PRINCIPAL</a>
-        </div>
+<div class="container">
+    <h1>Agregar Nueva Área</h1>
 
-        <div class="container">
-            <h1>Crear nueva Área</h1>
+    <form action="areas" method="post">
+        <input type="hidden" name="action" value="agregar">
 
-            <div class="form-container">
-                <form action="#" method="post">
-                    <div class="form-group">
-                        <label for="nombreArea">NOMBRE DEL ÁREA</label>
-                        <input type="text" id="nombreArea" name="nombreArea">
-                    </div>
+        Nombre del Área:
+        <input type="text" name="nombre" required>
 
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-gradiente">REGISTRAR</button>
-                        <a href="menuPrincipal.jsp" class="btn btn-gradiente">CANCELAR</a>
-                    </div>
-                </form>
-            </div>
-        </div>
+        Usuario Área (ID):
+        <input type="number" name="usuarioArea" required>
 
-    </body>
+        <input type="submit" value="Guardar">
+        <a href="areas" class="btn btn-gradiente">Cancelar</a>
+    </form>
+</div>
+
+</body>
 </html>
