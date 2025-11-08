@@ -15,6 +15,14 @@ body {
     text-align: center;
 }
 
+/* Contenedor para botones de navegación */
+.nav-btn-container {
+    padding: 15px 5%;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    text-align: left;
+}
+
 /* ===== Encabezados ===== */
 h1 {
     font-size: 2.5em;
@@ -32,7 +40,7 @@ h2 {
 .btn {
     display: inline-block;
     padding: 12px 25px;
-    margin: 10px;
+    margin: 5px; 
     text-decoration: none;
     border-radius: 10px;
     font-size: 1em;
@@ -40,27 +48,61 @@ h2 {
     color: white;
     transition: 0.3s ease;
     cursor: pointer;
+    border: 1px solid transparent;
+}
+
+/* Botón pequeño para acciones de tabla */
+.btn-small {
+    padding: 5px 10px;
+    font-size: 0.85em;
+    margin: 2px;
+}
+
+/* Botón que ocupa todo el ancho del contenedor */
+.btn-block {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 15px 0 0 0;
 }
 
 /* Gradiente principal */
 .btn-gradiente {
     background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
     border: none;
+    color: white;
 }
 
 .btn-gradiente:hover {
     background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
 }
 
-/* Botón de logout */
+/* Botón de logout (Eliminar/Volver) */
 .btn-logout {
     background: #ff4d4f;
     border: none;
+    color: white;
 }
 
 .btn-logout:hover {
     background: #d9363e;
 }
+
+/* Botón de información (Descargar) */
+.btn-info {
+    background-color: #e0f7fa;
+    border: 1px solid #b2ebf2;
+}
+
+.btn-info:hover {
+    background-color: #b2ebf2;
+}
+
+
+.btn-info.text-dark {
+    color: #000 !important; 
+}
+
 
 /* ===== Grid de menú ===== */
 .menu-grid {
@@ -84,6 +126,7 @@ table th, table td {
     padding: 12px;
     text-align: center;
     border-bottom: 1px solid #ddd;
+    word-break: break-word; 
 }
 
 table th {
@@ -96,16 +139,31 @@ table tr:hover {
 }
 
 /* ===== Formularios ===== */
-form {
+
+/* Contenedor central del formulario */
+.form-container {
     width: 100%;
     max-width: 600px;
-    margin: 0 auto;
+    margin: 30px auto;
     background: white;
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0px 3px 10px rgba(0,0,0,0.1);
+    text-align: left; 
 }
 
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Estilos de inputs y textareas */
 form input[type="text"],
 form input[type="number"],
 form input[type="date"],
@@ -113,7 +171,7 @@ form input[type="file"],
 form textarea {
     width: 100%;
     padding: 10px;
-    margin-bottom: 15px;
+    margin-top: 5px; 
     border: 1px solid #ccc;
     border-radius: 8px;
     font-size: 1em;
@@ -125,18 +183,13 @@ form textarea {
     height: 100px;
 }
 
-form input[type="submit"] {
-    background: #2575fc;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 12px 25px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-form input[type="submit"]:hover {
-    background: #6a11cb;
+/* Estilo para pequeños textos de ayuda */
+.hint-text {
+    display: block;
+    font-size: 0.85em;
+    color: #777;
+    margin-top: -10px;
+    margin-bottom: 10px;
 }
 
 /* ===== Mensajes y enlaces ===== */
@@ -147,4 +200,67 @@ a {
 
 a:hover {
     text-decoration: underline;
+}
+
+/* ===== ESTILOS PARA REPORTES ===== */
+/* Contenedor de reportes */
+.report-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    margin-top: 40px;
+}
+
+/* Tarjeta de reporte */
+.report-card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.report-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+}
+
+/* Títulos dentro de reportes */
+.report-card h3 {
+    color: #2575fc;
+    font-size: 1.3em;
+    margin-bottom: 10px;
+}
+
+/* Valores destacados */
+.report-value {
+    font-size: 2em;
+    font-weight: bold;
+    color: #1a1a1a;
+}
+
+/* ===== Animaciones suaves ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.report-card {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 600px) {
+    .container {
+        width: 95%;
+    }
+
+    .form-container {
+        padding: 20px;
+    }
+
+    table th, table td {
+        font-size: 0.9em;
+        padding: 8px;
+    }
 }

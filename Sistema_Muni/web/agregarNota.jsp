@@ -7,32 +7,32 @@
     <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
+<div class="nav-btn-container">
+    <a href="listaNotas.jsp" class="btn btn-logout">⬅ Volver al Listado de Notas</a>
+</div>
 
 <div class="container">
     <h1>Agregar Nueva Nota</h1>
-
     <form action="notas" method="post" enctype="multipart/form-data">
         <input type="hidden" name="action" value="agregar">
 
-        ID Persona:
-        <input type="number" name="idPersona" required>
+        <label for="idPersona">ID Persona:</label>
+        <input type="number" name="idPersona" id="idPersona" required><br><br>
 
-        Fecha de Entrega:
-        <input type="date" name="fechaEntrega" required>
+        <label for="fechaEntrega">Fecha de Entrega:</label>
+        <input type="date" name="fechaEntrega" id="fechaEntrega" required><br><br>
 
-        Detalles:
-        <textarea name="detalles"></textarea>
+        <label for="detalles">Detalles:</label>
+        <textarea name="detalles" id="detalles" rows="4"></textarea><br><br>
 
-        Estado Actual:
-        <input type="number" name="estadoActual" required>
+        <label for="estadoActual">Estado Actual:</label>
+        <input type="number" name="estadoActual" id="estadoActual" required><br><br>
 
-        Archivo Nota:
-        <input type="file" name="notaArchivo" required>
+        <label for="notaFile">Archivo Nota:</label>
+        <input type="file" name="notaFile" id="notaFile"><br><br>
 
-        <input type="submit" value="Guardar">
-        <a href="notas" class="btn btn-gradiente">Cancelar</a>
+        <button type="submit" class="btn btn-gradiente">Agregar Nota</button>
     </form>
 </div>
-
 </body>
 </html>

@@ -1,39 +1,41 @@
 package modelo;
 
 public class Area {
-    private int ID_Area;
-    private String Nombre;
-    private int Usuario_Area;
+    private int idArea;
+    private String nombre; 
+    private int usuarioArea;
 
     public Area() {}
 
-    public Area(int ID_Area, String Nombre, int Usuario_Area) {
-        this.ID_Area = ID_Area;
-        this.Nombre = Nombre;
-        this.Usuario_Area = Usuario_Area;
+    public Area(int idArea, String nombre, int usuarioArea) {
+        this.idArea = idArea;
+        this.nombre = nombre;
+        this.usuarioArea = usuarioArea;
     }
 
-    public int getID_Area() {
-        return ID_Area;
+    // Getters y Setters 
+    
+    public int getIdArea() {
+        return idArea;
     }
 
-    public void setID_Area(int ID_Area) {
-        this.ID_Area = ID_Area;
+    public void setIdArea(int idArea) {
+        this.idArea = idArea;
     }
 
     public String getNombre() {
-        return Nombre;
+        return nombre;
     }
 
-    public void setNombre(String Nombre) {
-        this.Nombre = Nombre;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public int getUsuario_Area() {
-        return Usuario_Area;
+    public int getUsuarioArea() {
+        return usuarioArea;
     }
 
-    public void setUsuario_Area(int Usuario_Area) {
-        this.Usuario_Area = Usuario_Area;
+    public void setUsuarioArea(int usuarioArea) {
+        this.usuarioArea = usuarioArea;
     }
 }

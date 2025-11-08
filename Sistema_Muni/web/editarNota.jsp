@@ -1,5 +1,9 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="modelo.Nota" %>
+<%
+    // Asegúrate de que el objeto 'nota' se haya pasado desde el Servlet
+    Nota nota = (Nota) request.getAttribute("nota");
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,36 +13,47 @@
 </head>
 <body>
 
-<%
-    Nota nota = (Nota) request.getAttribute("nota");
-%>
+<div class="nav-btn-container">
+    <a href="<%=request.getContextPath()%>/notas" class="btn btn-logout">⬅ Volver al Listado</a>
+</div>
 
 <div class="container">
     <h1>Editar Nota</h1>
 
-    <form action="notas" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="action" value="actualizar">
-        <input type="hidden" name="id" value="<%= nota.getID_Nota() %>">
+    <div class="form-container">
+        <form action="<%=request.getContextPath()%>/notas" method="post" enctype="multipart/form-data">
+            
+            <input type="hidden" name="action" value="editar">
+            <input type="hidden" name="id" value="<%= nota.getIdNota() %>">
 
-        ID Persona:
-        <input type="number" name="idPersona" value="<%= nota.getID_Persona() %>" required>
-
-        Fecha de Entrega:
-        <input type="date" name="fechaEntrega" value="<%= nota.getFecha_Entrega() %>" required>
-
-        Detalles:
-        <textarea name="detalles"><%= nota.getDetalles() %></textarea>
-
-        Estado Actual:
-        <input type="number" name="estadoActual" value="<%= nota.getEstado_Actual() %>" required>
-
-        Nueva Nota (Archivo):
-        <input type="file" name="notaArchivo">
-
-        <input type="submit" value="Actualizar">
-        <a href="notas" class="btn btn-gradiente">Cancelar</a>
-    </form>
+            <div class="form-group">
+                <label for="idPersona">ID Persona:</label>
+                <input type="number" id="idPersona" name="idPersona" value="<%= nota.getIdPersona() %>" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="fechaEntrega">Fecha Entrega:</label>
+                <input type="date" id="fechaEntrega" name="fechaEntrega" value="<%= nota.getFechaEntrega() %>" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="detalles">Detalles:</label>
+                <textarea id="detalles" name="detalles" rows="4" required><%= nota.getDetalles() %></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="estadoActual">Estado:</label>
+                <input type="text" id="estadoActual" name="estadoActual" value="<%= nota.getEstadoActual() %>" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="notaFile">Archivo Nota (Opcional):</label>
+                <input type="file" name="notaFile" id="notaFile">
+                <small class="hint-text">Selecciona un archivo si deseas reemplazar el adjunto actual.</small>
+            </div>
+            <button type="submit" class="btn btn-gradiente btn-block">Guardar Cambios</button>
+        </form>
+    </div>
 </div>
-
 </body>
 </html>

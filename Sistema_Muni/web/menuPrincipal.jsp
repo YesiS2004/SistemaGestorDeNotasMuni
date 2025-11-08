@@ -19,7 +19,7 @@
             <div class="menu-grid">
                 <a href="listaNotas.jsp" class="btn btn-gradiente">Notas</a>
                 <a href="crearArea.jsp" class="btn btn-gradiente">Crear Área</a>
-                <a href="#" class="btn btn-gradiente">Reportes</a>
+                <a href="Reportes" class="btn btn-gradiente">Reportes</a>
                 <a href="listaAreas.jsp" class="btn btn-gradiente">Ver Áreas</a>
             </div>
         </div>

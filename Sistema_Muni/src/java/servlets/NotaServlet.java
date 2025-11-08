@@ -2,58 +2,76 @@ package servlets;
 
 import dao.NotaDAO;
 import modelo.Nota;
-
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
+import java.sql.Date;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
-import java.io.*;
-import java.sql.Date;
-import java.util.List;
 
 @WebServlet("/notas")
-@MultipartConfig(maxFileSize = 16177215) // Para subir archivos grandes
+@MultipartConfig(maxFileSize = 16177215) 
 public class NotaServlet extends HttpServlet {
 
-    private NotaDAO notaDAO = new NotaDAO();
+    private final NotaDAO notaDAO = new NotaDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("usuario") == null) {
-            response.sendRedirect("login.jsp");
-            return;
-        }
-
         String action = request.getParameter("action");
         if (action == null) action = "listar";
 
         switch (action) {
-            case "nuevo":
-                request.getRequestDispatcher("agregarNota.jsp").forward(request, response);
+            case "listar":
+                List<Nota> lista = notaDAO.listar();
+                request.setAttribute("notas", lista);
+                request.getRequestDispatcher("listaNotas.jsp").forward(request, response);
                 break;
 
             case "editar":
                 int idEditar = Integer.parseInt(request.getParameter("id"));
-                Nota notaEditar = notaDAO.buscarPorId(idEditar);
-                request.setAttribute("nota", notaEditar);
+                Nota nota = notaDAO.buscarPorId(idEditar);
+                request.setAttribute("nota", nota);
                 request.getRequestDispatcher("editarNota.jsp").forward(request, response);
                 break;
 
             case "eliminar":
                 int idEliminar = Integer.parseInt(request.getParameter("id"));
                 notaDAO.eliminar(idEliminar);
-                response.sendRedirect("notas");
+                response.sendRedirect("notas?action=listar");
                 break;
 
-            case "listar":
-            default:
-                List<Nota> lista = notaDAO.listar();
-                request.setAttribute("notas", lista);
-                request.getRequestDispatcher("listaNotas.jsp").forward(request, response);
+            case "nuevo":
+                request.getRequestDispatcher("agregarNota.jsp").forward(request, response);
                 break;
+                
+            case "descargar": 
+                int idDescargar = Integer.parseInt(request.getParameter("id"));
+                Nota notaDescarga = notaDAO.buscarPorId(idDescargar);
+                
+                if (notaDescarga != null && notaDescarga.getArchivoNota() != null) {
+                    byte[] archivoBytes = notaDescarga.getArchivoNota();
+                    
+                    response.setContentType("application/octet-stream"); 
+                    
+                    response.setHeader("Content-Disposition", "attachment; filename=\"nota_" + idDescargar + "_adjunto.bin\""); 
+                    response.setContentLength(archivoBytes.length);
+
+                    response.getOutputStream().write(archivoBytes);
+                    response.getOutputStream().flush();
+                } else {
+                    response.setStatus(HttpServletResponse.SC_NOT_FOUND); 
+                    response.getWriter().println("El archivo no existe o no pudo ser encontrado para la nota ID: " + idDescargar);
+                }
+                break;
+
+
+            default:
+                response.sendRedirect("notas?action=listar");
         }
     }
 
@@ -62,43 +80,78 @@ public class NotaServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String action = request.getParameter("action");
+        if (action == null) action = "listar";
 
+        switch (action) {
+            case "agregar":
+                procesarFormulario(request, response, false);
+                break;
+
+            case "editar": 
+                procesarFormulario(request, response, true);
+                break;
+
+            default:
+                response.sendRedirect("notas?action=listar");
+        }
+    }
+
+    private void procesarFormulario(HttpServletRequest request, HttpServletResponse response, boolean esEdicion)
+            throws IOException, ServletException {
+
+        // Parámetros básicos
         int idPersona = Integer.parseInt(request.getParameter("idPersona"));
         Date fechaEntrega = Date.valueOf(request.getParameter("fechaEntrega"));
         String detalles = request.getParameter("detalles");
         int estadoActual = Integer.parseInt(request.getParameter("estadoActual"));
 
-        // Lectura del archivo (compatible con Java 8)
-        Part archivo = request.getPart("notaArchivo");
-        InputStream inputStream = archivo.getInputStream();
-        byte[] notaBytes = null;
-        try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
-            byte[] data = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(data, 0, data.length)) != -1) {
-                buffer.write(data, 0, bytesRead);
+        // Leer archivo
+        Part filePart = request.getPart("notaFile");
+        byte[] archivoBytes = null;
+
+        if (filePart != null && filePart.getSize() > 0) {
+            try (InputStream inputStream = filePart.getInputStream();
+                 ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
+
+                byte[] tmp = new byte[4096];
+                int nRead;
+                while ((nRead = inputStream.read(tmp)) != -1) {
+                    buffer.write(tmp, 0, nRead);
+                }
+                archivoBytes = buffer.toByteArray();
+            } catch (IOException ex) {
+                 request.getSession().setAttribute("errorMsg", "Error leyendo el archivo: " + ex.getMessage());
+                 response.sendRedirect("notas?action=listar");
+                 return;
             }
-            notaBytes = buffer.toByteArray();
         }
 
-        switch (action) {
-            case "agregar":
-                Nota nuevaNota = new Nota();
-                nuevaNota.setID_Persona(idPersona);
-                nuevaNota.setFecha_Entrega(fechaEntrega);
-                nuevaNota.setDetalles(detalles);
-                nuevaNota.setEstado_Actual(estadoActual);
-                nuevaNota.setNota(notaBytes);
-                notaDAO.agregar(nuevaNota);
-                break;
+        Nota n = new Nota();
+        n.setIdPersona(idPersona);
+        n.setFechaEntrega(fechaEntrega);
+        n.setDetalles(detalles);
+        n.setEstadoActual(estadoActual);
 
-            case "actualizar":
-                int idNota = Integer.parseInt(request.getParameter("id"));
-                Nota notaActualizada = new Nota(idNota, idPersona, fechaEntrega, detalles, estadoActual, notaBytes);
-                notaDAO.actualizar(notaActualizada);
-                break;
+        if (esEdicion) {
+            // Si es edición, preservamos el archivo anterior cuando no se sube uno nuevo
+            int id = Integer.parseInt(request.getParameter("id"));
+            
+            // Si el usuario SUBIÓ un nuevo archivo
+            if (archivoBytes != null) {
+                n.setArchivoNota(archivoBytes);
+            } else {
+                // Si NO SUBIÓ un nuevo archivo, buscamos el archivo existente
+                Nota existente = notaDAO.buscarPorId(id); 
+                n.setArchivoNota(existente != null ? existente.getArchivoNota() : null);
+            }
+            n.setIdNota(id);
+            notaDAO.actualizar(n);
+        } else {
+            // Si es nueva, puede venir sin archivo 
+            n.setArchivoNota(archivoBytes);
+            notaDAO.agregar(n);
         }
 
-        response.sendRedirect("notas");
+        response.sendRedirect("notas?action=listar");
     }
 }

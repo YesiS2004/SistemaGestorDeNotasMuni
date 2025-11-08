@@ -1,5 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="modelo.Area" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="modelo.Area" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,26 +9,43 @@
 </head>
 <body>
 
-<%
-    Area area = (Area) request.getAttribute("area");
-%>
+<div class="nav-btn-container">
+    <a href="areas?action=listar" class="btn btn-logout">⬅ Volver al Listado</a>
+</div>
 
 <div class="container">
     <h1>Editar Área</h1>
 
+    <%
+        Area area = (Area) request.getAttribute("area");
+        if (area == null) {
+    %>
+        <p>No se encontró el área seleccionada.</p>
+    <%
+        } else {
+    %>
+
     <form action="areas" method="post">
+        <!-- Action del servlet -->
         <input type="hidden" name="action" value="actualizar">
-        <input type="hidden" name="id" value="<%= area.getID_Area() %>">
+        <input type="hidden" name="id" value="<%= area.getIdArea() %>">
 
-        Nombre del Área:
-        <input type="text" name="nombre" value="<%= area.getNombre() %>" required>
+        <div class="form-group">
+            <label>Nombre del Área:</label>
+            <input type="text" name="nombre" value="<%= area.getNombre() %>" required>
+        </div>
 
-        Usuario Área (ID):
-        <input type="number" name="usuarioArea" value="<%= area.getUsuario_Area() %>" required>
+        <div class="form-group">
+            <label>Usuario Responsable (ID):</label>
+            <input type="number" name="usuarioArea" value="<%= area.getUsuarioArea() %>" required>
+        </div>
 
-        <input type="submit" value="Actualizar">
-        <a href="areas" class="btn btn-gradiente">Cancelar</a>
+        <button type="submit" class="btn btn-gradiente">Actualizar Área</button>
     </form>
+
+    <%
+        }
+    %>
 </div>
 
 </body>

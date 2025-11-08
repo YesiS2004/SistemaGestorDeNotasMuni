@@ -1,44 +1,85 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="java.util.*, modelo.Nota" %>
+<%@page contentType="text/html; charset=UTF-8"%>
+<%@page import="java.util.List"%>
+<%@page import="modelo.Nota"%>
+<%@page import="dao.NotaDAO"%>
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Listado de Notas</title>
+    <meta charset="UTF-8">
+    <title>Lista de Notas</title>
     <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
-    <h2>Listado de Notas</h2>
-    <a href="crearArea.jsp" class="btn btn-gradiente">Agregar Nueva Nota</a>
-    <br><br>
 
-    <table border="1" cellpadding="5">
-        <tr>
-            <th>ID</th>
-            <th>ID Persona</th>
-            <th>Fecha Entrega</th>
-            <th>Detalles</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-        </tr>
+<div class="nav-btn-container">
+    <a href="<%=request.getContextPath()%>/menuPrincipal.jsp" class="btn btn-logout">⬅ Volver al Menú</a>
+</div>
+
+<div class="container">
+    <h1>Gestión de Notas</h1>
+    <h2>Listado completo de todas las Notas registradas</h2>
+    
+    <a href="notas?action=nuevo" class="btn btn-gradiente">Crear Nueva Nota</a>
+
+    <%
+        NotaDAO dao = new NotaDAO();
+        List<Nota> lista = dao.listar();
+
+        if(lista.isEmpty()) {
+    %>
+        <p style="margin-top: 50px;">No hay notas registradas en el sistema.</p>
+    <%
+        } else {
+    %>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>ID Persona</th>
+                <th>Fecha Entrega</th>
+                <th>Detalles</th>
+                <th>Estado</th>
+                <th>Archivo Adjunto</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
         <%
-            List<Nota> notas = (List<Nota>) request.getAttribute("notas");
-            if (notas != null) {
-                for (Nota n : notas) {
+            for (Nota n : lista) {
         %>
         <tr>
-            <td><%= n.getID_Nota() %></td>
-            <td><%= n.getID_Persona() %></td>
-            <td><%= n.getFecha_Entrega() %></td>
+            <td><%= n.getIdNota() %></td>
+            <td><%= n.getIdPersona() %></td>
+            <td><%= n.getFechaEntrega() %></td>
             <td><%= n.getDetalles() %></td>
-            <td><%= n.getEstado_Actual() %></td>
+            <td><%= n.getEstadoActual() %></td>
+            
             <td>
-                <a href="notas?action=editar&id=<%= n.getID_Nota() %>">Editar</a> |
-                <a href="notas?action=eliminar&id=<%= n.getID_Nota() %>"
-                   onclick="return confirm('¿Seguro que desea eliminar esta nota?')">Eliminar</a>
+                <%
+                    if (n.getArchivoNota() != null) {
+                %>
+                    <a href="notas?action=descargar&id=<%=n.getIdNota()%>" class="btn btn-small btn-info text-dark">Descargar</a>
+                <%
+                    } else {
+                %>
+                    No
+                <%
+                    }
+                %>
+            </td>
+            
+            <td>
+                <a href="notas?action=editar&id=<%=n.getIdNota()%>" class="btn btn-gradiente">Editar</a>
+                <a href="notas?action=eliminar&id=<%=n.getIdNota()%>" class="btn btn-logout" onclick="return confirm('¿Seguro que desea eliminar esta Nota?')">Eliminar</a>
             </td>
         </tr>
-        <%      }
-            }
-        %>
+        <% } %>
+        </tbody>
     </table>
+    <%
+        }
+    %>
+</div>
 </body>
 </html>
